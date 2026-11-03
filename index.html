@@ -139,6 +139,15 @@ a.btn.primary{background:var(--bronze);border-color:var(--bronze);color:var(--bg
 .who-k{font-size:.78rem;color:var(--muted);white-space:nowrap}
 .nap ol.buoc{margin:0;padding-left:20px;display:grid;gap:6px}
 .nap a{color:var(--bronze-ink)}
+.quy-top{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr) minmax(0,1.4fr);gap:18px;align-items:start}
+@media (max-width:900px){.quy-top{grid-template-columns:1fr}}
+.quy-num{font-size:2rem;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.15}
+.quy-kpi{display:grid;gap:6px;font-size:.9rem}
+.quy-kpi>div{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed var(--line);padding-bottom:4px;font-variant-numeric:tabular-nums}
+.neg{color:var(--bad)} .pos{color:var(--ok)}
+.hm-row{display:grid;grid-template-columns:minmax(0,9.5em) 1fr auto;gap:8px;align-items:center;font-size:.82rem;margin-bottom:5px}
+.hm-row .bar{height:10px;border-radius:5px;background:var(--mute-bg);overflow:hidden}
+.hm-row .bar i{display:block;height:100%;background:var(--bronze)}
 /* sổ */
 .filters{display:flex;gap:8px;flex-wrap:wrap}
 .filters select{width:auto}
@@ -210,6 +219,16 @@ footer{font-size:.8rem;color:var(--muted)}
       </div>
     </div>
     <div class="chain card" style="padding:14px 12px 6px"><ol id="chain"></ol></div>
+  </section>
+
+  <section class="card" aria-labelledby="h-quy">
+    <div class="sec-head"><h2 id="h-quy">Quỹ dự án</h2><a class="btn" id="btnThuChi" target="_blank" rel="noopener" href="https://github.com/triettran261192-code/soho-tt/issues/new?template=5-thu-chi.yml">Ghi thu / chi ↗</a></div>
+    <div class="quy-top">
+      <div class="quy-du"><div class="eyebrow">Số dư tài khoản theo sổ</div><div class="quy-num" id="qDu">0 đ</div><div class="muted" id="qDuNote" style="font-size:.8rem"></div></div>
+      <div class="quy-kpi"><div><span class="muted">Góp vốn</span><b id="qGop"></b></div><div><span class="muted">Doanh thu</span><b id="qThu"></b></div><div><span class="muted">Thu khác</span><b id="qKhac"></b></div><div><span class="muted">Đã chi</span><b id="qChi" class="neg"></b></div></div>
+      <div class="quy-hm" id="qHm"></div>
+    </div>
+    <div class="tbl"><table id="tblQuy"></table></div>
   </section>
 
   <div class="grid2">
@@ -294,37 +313,55 @@ footer{font-size:.8rem;color:var(--muted)}
 <script type="application/x-ndjson" id="mau">
 /*MAU-BAT-DAU*/
 {"du_an": "SOHO T&T & Shareholders", "ghi_luc": "2026-11-10T08:00:00+07:00", "hash": "a8713ebb0a5b1849bd566757a7aaef31df97e9dd78a34bdb2bc9365ed852657a", "loai": "KHOI_TAO", "mo_ta": "SỔ MẪU theo Phụ lục A — không phải dữ liệu thật", "quy_tac": {"don_gia_gio": 50000, "dong_moi_diem": 1000, "he_so": {"CHI_PHI": 2, "CHO_MUON": 1, "GIO_CONG": 1, "KHACH_HANG": 1, "TAI_SAN": 2, "TIEN_MAT": 2}, "ngay_phan_doi": 7, "tran_gio_thang": 80, "ty_le_khach_pt": 10}, "stt": 1, "truoc": "0000000000000000000000000000000000000000000000000000000000000000"}
-{"ghi_luc": "2026-11-10T08:01:00+07:00", "hash": "f70907bad83fa760a7a50a1546354e12831b5894cba900629b8750fa1a67daff", "loai": "DIEU_LE", "mo_ta": "Toàn văn Điều lệ được 100% thành viên ký", "phien_ban": "1.1", "sha256": "bb87167afbd7ce05591d88a004f29b205ee1f6dbae9abb0f7e52bf6702060421", "stt": 2, "truoc": "a8713ebb0a5b1849bd566757a7aaef31df97e9dd78a34bdb2bc9365ed852657a"}
-{"ghi_luc": "2026-11-10T08:02:00+07:00", "github": "thanh-vien-a", "hash": "1862d57f879b557002f138defef436e369c74ec05caeb91e0b6f4d783a6dcb56", "loai": "THANH_VIEN", "stt": 3, "ten": "Thành viên A", "thanh_vien": "NVA_1111_85", "truoc": "f70907bad83fa760a7a50a1546354e12831b5894cba900629b8750fa1a67daff", "vai_tro": "Người vận hành", "von_cam_ket": 6600000}
-{"ghi_luc": "2026-11-10T08:03:00+07:00", "github": "thanh-vien-b", "hash": "89561cda42214c5c11a14a239f50c1e3c987588a113185b4be550172184f5505", "loai": "THANH_VIEN", "stt": 4, "ten": "Thành viên B", "thanh_vien": "TTB_2222_90", "truoc": "1862d57f879b557002f138defef436e369c74ec05caeb91e0b6f4d783a6dcb56", "vai_tro": "Cổ đông góp tiền", "von_cam_ket": 8000000}
-{"ghi_luc": "2026-11-10T08:04:00+07:00", "github": "thanh-vien-c", "hash": "1a0029a82b74e4f9195716d02be755da46387e1972509d3c657bff2ceb688fc4", "loai": "THANH_VIEN", "stt": 5, "ten": "Thành viên C", "thanh_vien": "LVC_3333_95", "truoc": "89561cda42214c5c11a14a239f50c1e3c987588a113185b4be550172184f5505", "vai_tro": "Cổ đông, bán hàng", "von_cam_ket": 3900000}
-{"chung_tu": "786a4ff8baa48154e169d1de1bb9f609818228ded63a69f19f82ad440c4a77a3", "ghi_luc": "2026-11-11T10:00:00+07:00", "hash": "16d3a3f4a83b70a0e218484b3c8600a7e75109ddb6d6c3feb2d61311293b2d9e", "loai": "TIEN_MAT", "mo_ta": "Góp vốn bậc 0", "ngay": "2026-11-11", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "so_tien": 4000000, "stt": 6, "thanh_vien": "NVA_1111_85", "truoc": "1a0029a82b74e4f9195716d02be755da46387e1972509d3c657bff2ceb688fc4"}
-{"chung_tu": "176a9454b8069f4ac63aeed0a92d6286df7e9c78379e7183998dff3be496ee48", "ghi_luc": "2026-11-11T10:05:00+07:00", "hash": "1d61a191a268f7f8d244dccb1f0c1e1421653dbff417cf5fb4b2642578c93aab", "loai": "TIEN_MAT", "mo_ta": "Góp vốn bậc 0", "ngay": "2026-11-11", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "so_tien": 4000000, "stt": 7, "thanh_vien": "TTB_2222_90", "truoc": "16d3a3f4a83b70a0e218484b3c8600a7e75109ddb6d6c3feb2d61311293b2d9e"}
-{"chung_tu": "3dbf88b9fb6dacf3bf1799bfb6debb0c046560edf2cb0ff3db681fb594ce9e11", "ghi_luc": "2026-11-12T10:00:00+07:00", "hash": "7c127db6cb802b97cfef1ff2151dc0b975ca3f5f361b0cfae299487bdaa4fbb7", "loai": "TIEN_MAT", "mo_ta": "Góp vốn bậc 0", "ngay": "2026-11-12", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "so_tien": 3900000, "stt": 8, "thanh_vien": "LVC_3333_95", "truoc": "1d61a191a268f7f8d244dccb1f0c1e1421653dbff417cf5fb4b2642578c93aab"}
-{"ghi_luc": "2026-11-16T09:00:00+07:00", "hash": "dd9e65f6f4b552739583cd1974c8fedd0c30482d4d3cdb7589c08d6a68db532c", "loai": "GIO_CONG", "mo_ta": "Thiết kế và in thử ốp Note 10+", "ngay": "2026-11-15", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "phut": 720, "stt": 9, "thanh_vien": "NVA_1111_85", "truoc": "7c127db6cb802b97cfef1ff2151dc0b975ca3f5f361b0cfae299487bdaa4fbb7"}
-{"ghi_luc": "2026-11-29T09:00:00+07:00", "hash": "04c8a8adfc5cb0e3e77eec8d5c9cdcd7a11ed030521bc13e03553a82d8849494", "loai": "GIO_CONG", "mo_ta": "In thử, chỉnh khít, chụp ảnh sản phẩm", "ngay": "2026-11-28", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "phut": 1080, "stt": 10, "thanh_vien": "NVA_1111_85", "truoc": "dd9e65f6f4b552739583cd1974c8fedd0c30482d4d3cdb7589c08d6a68db532c"}
-{"diem": {"LVC_3333_95": 7800000, "NVA_1111_85": 9500000, "TTB_2222_90": 8000000}, "ghi_luc": "2026-12-08T09:00:00+07:00", "hash": "7466e2c82d4680cf860aabbc9672f9acdecd27ba81e0ae51bf3aba6b21a4506a", "ky": "2026-11", "loai": "CHOT_KY", "mo_ta": "Chốt kỳ (giá trị bằng đồng sau hệ số; chia 1.000 ra điểm)", "stt": 11, "truoc": "04c8a8adfc5cb0e3e77eec8d5c9cdcd7a11ed030521bc13e03553a82d8849494"}
-{"ghi_luc": "2026-12-11T09:00:00+07:00", "hash": "ab4872d8b1446f4c97e3980eaafa380699153086aa4aaf6263592239682515c7", "loai": "GIO_CONG", "mo_ta": "Bán thử cho khách ngoài, chăm sóc khách", "ngay": "2026-12-10", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "phut": 900, "stt": 12, "thanh_vien": "NVA_1111_85", "truoc": "7466e2c82d4680cf860aabbc9672f9acdecd27ba81e0ae51bf3aba6b21a4506a"}
-{"ghi_luc": "2026-12-23T09:00:00+07:00", "hash": "8c5563226a9b94b08b81fa68e7ff9ff4531ba430b150c2e669deca4217ddc041", "loai": "GIO_CONG", "mo_ta": "Đóng gói, giao hàng, sổ sách", "ngay": "2026-12-22", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "phut": 900, "stt": 13, "thanh_vien": "NVA_1111_85", "truoc": "ab4872d8b1446f4c97e3980eaafa380699153086aa4aaf6263592239682515c7"}
-{"diem": {"LVC_3333_95": 7800000, "NVA_1111_85": 11000000, "TTB_2222_90": 8000000}, "ghi_luc": "2027-01-05T09:00:00+07:00", "hash": "3ed647f9e2a10eb12f8472434867a5db74a6f9336795f4a4363af93079f41d04", "ky": "2026-12", "loai": "CHOT_KY", "mo_ta": "Chốt kỳ (giá trị bằng đồng sau hệ số; chia 1.000 ra điểm)", "stt": 14, "truoc": "8c5563226a9b94b08b81fa68e7ff9ff4531ba430b150c2e669deca4217ddc041"}
-{"chung_tu": "5225fcc8b9ed82480c0064af13c15523eca80abbdc3696c0ca2658ded08c3757", "ghi_luc": "2027-01-05T10:00:00+07:00", "hash": "c796838ef6c65866dc6ce3c8642cf662519ec2f264d7333f45e3b3b37e54835e", "ket_qua": "Tự động theo Điều 12", "loai": "QUYET_DINH", "mo_ta": "Đạt chỉ tiêu bậc 0: 6 ốp ≥ 200.000 đ bán cho người ngoài. Mở bậc 1.", "stt": 15, "truoc": "3ed647f9e2a10eb12f8472434867a5db74a6f9336795f4a4363af93079f41d04"}
-{"chung_tu": "a10ba43fcd9c961d596959fe662ef7c59cdf48bf41fccb38e4db49837ae2853a", "ghi_luc": "2027-01-08T10:00:00+07:00", "hash": "df863f9be120576de4cb769ebd294eb2044f87726189234664266e45c4cf4fbb", "loai": "TIEN_MAT", "mo_ta": "Góp vốn bậc 1", "ngay": "2027-01-08", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "so_tien": 2600000, "stt": 16, "thanh_vien": "NVA_1111_85", "truoc": "c796838ef6c65866dc6ce3c8642cf662519ec2f264d7333f45e3b3b37e54835e"}
-{"chung_tu": "36bab89a7106ba531cf2bc406b4ce337a5162aac4bf605c28df443368de6593e", "ghi_luc": "2027-01-09T10:00:00+07:00", "hash": "5775a4b1e2522591d2c4b6dd902f4aa98bbc8d53bb1b6945edfef9326a3b2f24", "loai": "TIEN_MAT", "mo_ta": "Góp vốn bậc 1", "ngay": "2027-01-09", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "so_tien": 4000000, "stt": 17, "thanh_vien": "TTB_2222_90", "truoc": "df863f9be120576de4cb769ebd294eb2044f87726189234664266e45c4cf4fbb"}
-{"ghi_luc": "2027-02-02T09:00:00+07:00", "hash": "49971ffce47933c005248dc59adfd593a0ecbf3e4affd1e6bd5baaba823f0830", "loai": "GIO_CONG", "mo_ta": "Mở shop Shopee, đóng gói, chăm sóc khách", "ngay": "2027-01-31", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "phut": 2700, "stt": 18, "thanh_vien": "NVA_1111_85", "truoc": "5775a4b1e2522591d2c4b6dd902f4aa98bbc8d53bb1b6945edfef9326a3b2f24"}
-{"ghi_luc": "2027-02-04T20:00:00+07:00", "hash": "8452a20ceb7ae9176a652dabecc5005c61e126a9e6549283f772bd68fc1e3493", "loai": "PHAN_DOI", "mo_ta": "Nhật ký công việc tháng 1 chỉ có 40 giờ", "nguoi_ghi": "TTB_2222_90", "nguoi_khai": "thanh-vien-b", "stt": 19, "tham_chieu": 18, "truoc": "49971ffce47933c005248dc59adfd593a0ecbf3e4affd1e6bd5baaba823f0830"}
-{"ghi_luc": "2027-02-05T08:00:00+07:00", "hash": "294baa9d3bef433c28681a82d3307d520db2cddcc64849e74c03611bd32a4694", "loai": "DIEU_CHINH", "mo_ta": "Ghi nhầm 45 giờ, đúng là 40 giờ theo nhật ký", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "stt": 20, "tham_chieu": 18, "truoc": "8452a20ceb7ae9176a652dabecc5005c61e126a9e6549283f772bd68fc1e3493"}
-{"ghi_luc": "2027-02-05T08:01:00+07:00", "hash": "f24642f14fa14708983c32b9e98c414e8193380250a2bd6de8252519769e50df", "loai": "GIO_CONG", "mo_ta": "Mở shop Shopee, đóng gói, chăm sóc khách (ghi lại)", "ngay": "2027-01-31", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "phut": 2400, "stt": 21, "thanh_vien": "NVA_1111_85", "truoc": "294baa9d3bef433c28681a82d3307d520db2cddcc64849e74c03611bd32a4694"}
-{"ghi_luc": "2027-02-05T21:00:00+07:00", "hash": "6e7e59131f5a7c58ae44d83f816fe3072e6b0c67b2d4e40ea3c159c8cc5d2a39", "loai": "RUT_PHAN_DOI", "mo_ta": "Đã điều chỉnh đúng, rút phản đối", "nguoi_ghi": "TTB_2222_90", "nguoi_khai": "thanh-vien-b", "stt": 22, "tham_chieu": 19, "truoc": "f24642f14fa14708983c32b9e98c414e8193380250a2bd6de8252519769e50df"}
-{"diem": {"LVC_3333_95": 7800000, "NVA_1111_85": 18200000, "TTB_2222_90": 16000000}, "ghi_luc": "2027-02-12T09:00:00+07:00", "hash": "0c694c5b37d7bc2ffb66a76224d6323308c531cc84af79181b93f1817cbdddd1", "ky": "2027-01", "loai": "CHOT_KY", "mo_ta": "Chốt kỳ (giá trị bằng đồng sau hệ số; chia 1.000 ra điểm)", "stt": 23, "truoc": "6e7e59131f5a7c58ae44d83f816fe3072e6b0c67b2d4e40ea3c159c8cc5d2a39"}
-{"ghi_luc": "2027-03-01T09:00:00+07:00", "hash": "37da91c88835d7087f001c99c59546ff05ff93faefd349c6d6a5e7661748f1f1", "loai": "GIO_CONG", "mo_ta": "Sản xuất, chăm sóc khách, quảng cáo", "ngay": "2027-02-28", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "phut": 2400, "stt": 24, "thanh_vien": "NVA_1111_85", "truoc": "0c694c5b37d7bc2ffb66a76224d6323308c531cc84af79181b93f1817cbdddd1"}
-{"diem": {"LVC_3333_95": 7800000, "NVA_1111_85": 20200000, "TTB_2222_90": 16000000}, "ghi_luc": "2027-03-08T09:00:00+07:00", "hash": "21be2f10df8f2241de6e2fbc1d2abf1d3b1a76d06914868bcfe851d768a55d49", "ky": "2027-02", "loai": "CHOT_KY", "mo_ta": "Chốt kỳ (giá trị bằng đồng sau hệ số; chia 1.000 ra điểm)", "stt": 25, "truoc": "37da91c88835d7087f001c99c59546ff05ff93faefd349c6d6a5e7661748f1f1"}
-{"doanh_thu": 74700000, "ghi_luc": "2027-03-21T10:00:00+07:00", "hash": "1055cd98602b7cd2a6ca6a1651b00594f545b2ad1647ab442e8a83b6f246b85f", "loai": "KHACH_HANG", "ma_doi_chieu": "HD-0012", "mo_ta": "Công ty ABC đặt 30 ốp khắc logo × 249.000 đ, đã thu đủ", "ngay": "2027-03-20", "nguoi_ghi": "LVC_3333_95", "nguoi_khai": "thanh-vien-c", "nguon": "phiếu #7", "stt": 26, "thanh_vien": "LVC_3333_95", "truoc": "21be2f10df8f2241de6e2fbc1d2abf1d3b1a76d06914868bcfe851d768a55d49"}
-{"ghi_luc": "2027-03-23T19:30:00+07:00", "hash": "2421ba0b0f42cb6928652e6250609bfd46e7a7a3d9345c03bdca24f0c73e0cfb", "loai": "DIEU_CHINH", "mo_ta": "Gõ thừa số 0: 74.700.000 đúng là 7.470.000", "nguoi_ghi": "LVC_3333_95", "nguoi_khai": "thanh-vien-c", "nguon": "phiếu #8", "stt": 27, "tham_chieu": 26, "truoc": "1055cd98602b7cd2a6ca6a1651b00594f545b2ad1647ab442e8a83b6f246b85f"}
-{"doanh_thu": 7470000, "ghi_luc": "2027-03-23T19:31:00+07:00", "hash": "14d04f1792dadd0247ab19d65671323e74a98ee7f24d6311f9d972118284bba9", "loai": "KHACH_HANG", "ma_doi_chieu": "HD-0012", "mo_ta": "Công ty ABC đặt 30 ốp khắc logo × 249.000 đ, đã thu đủ", "ngay": "2027-03-20", "nguoi_ghi": "LVC_3333_95", "nguoi_khai": "thanh-vien-c", "nguon": "phiếu #8", "stt": 28, "thanh_vien": "LVC_3333_95", "truoc": "2421ba0b0f42cb6928652e6250609bfd46e7a7a3d9345c03bdca24f0c73e0cfb"}
-{"ghi_luc": "2027-04-01T09:00:00+07:00", "hash": "6192a7e18eec157523f39d66cb00dbfbd254a3afe048c426d52ac4d52929b623", "loai": "GIO_CONG", "mo_ta": "Sản xuất đơn doanh nghiệp, chăm sóc khách", "ngay": "2027-03-31", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "phut": 2400, "stt": 29, "thanh_vien": "NVA_1111_85", "truoc": "14d04f1792dadd0247ab19d65671323e74a98ee7f24d6311f9d972118284bba9"}
-{"diem": {"LVC_3333_95": 8547000, "NVA_1111_85": 22200000, "TTB_2222_90": 16000000}, "ghi_luc": "2027-04-08T09:00:00+07:00", "hash": "b2ea42012a408f6ea8ffe5fe6e71520d1f0cc181e6d5d0ed77c22aa06d07d0dc", "ky": "2027-03", "loai": "CHOT_KY", "mo_ta": "Chốt kỳ (giá trị bằng đồng sau hệ số; chia 1.000 ra điểm)", "stt": 30, "truoc": "6192a7e18eec157523f39d66cb00dbfbd254a3afe048c426d52ac4d52929b623"}
-{"ghi_luc": "2027-04-30T21:00:00+07:00", "hash": "be775f7692f087a984dd41082da0194bfb166ba37077ae1a7eddec833afffbff", "loai": "GIO_CONG", "mo_ta": "Sản xuất, mẫu mới iPhone", "ngay": "2027-04-30", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "phut": 2400, "stt": 31, "thanh_vien": "NVA_1111_85", "truoc": "b2ea42012a408f6ea8ffe5fe6e71520d1f0cc181e6d5d0ed77c22aa06d07d0dc"}
-{"diem": {"LVC_3333_95": 8547000, "NVA_1111_85": 24200000, "TTB_2222_90": 16000000}, "ghi_luc": "2027-05-08T09:00:00+07:00", "hash": "072f80a03b364a031a90a19a035bb8688183fd53708afc39fa90c7d9e9580577", "ky": "2027-04", "loai": "CHOT_KY", "mo_ta": "Chốt kỳ (giá trị bằng đồng sau hệ số; chia 1.000 ra điểm)", "stt": 32, "truoc": "be775f7692f087a984dd41082da0194bfb166ba37077ae1a7eddec833afffbff"}
+{"ghi_luc": "2026-11-10T08:01:00+07:00", "hash": "54297a562ceefdd2d1ad527999d473b5c8a51a3057a293ee63ab803d7a93a5e6", "loai": "DIEU_LE", "mo_ta": "Toàn văn Điều lệ được 100% thành viên ký", "phien_ban": "1.1", "sha256": "b9f091cd134fd30f6485aaf27cc3586f1fc7890eb3e8f22d83b190eecdc2e8b5", "stt": 2, "truoc": "a8713ebb0a5b1849bd566757a7aaef31df97e9dd78a34bdb2bc9365ed852657a"}
+{"ghi_luc": "2026-11-10T08:02:00+07:00", "github": "thanh-vien-a", "hash": "5d5d759cab2ece2640de562d49f21a747b5f080a7e6dc5f1e1b3e574f9f22a7c", "loai": "THANH_VIEN", "stt": 3, "ten": "Thành viên A", "thanh_vien": "NVA_1111_85", "truoc": "54297a562ceefdd2d1ad527999d473b5c8a51a3057a293ee63ab803d7a93a5e6", "vai_tro": "Người vận hành", "von_cam_ket": 6600000}
+{"ghi_luc": "2026-11-10T08:03:00+07:00", "github": "thanh-vien-b", "hash": "93969091d18adce1cdc7430f6beee0d38955fbf150f51d6732d0cf8b31f8c2fb", "loai": "THANH_VIEN", "stt": 4, "ten": "Thành viên B", "thanh_vien": "TTB_2222_90", "truoc": "5d5d759cab2ece2640de562d49f21a747b5f080a7e6dc5f1e1b3e574f9f22a7c", "vai_tro": "Cổ đông góp tiền", "von_cam_ket": 8000000}
+{"ghi_luc": "2026-11-10T08:04:00+07:00", "github": "thanh-vien-c", "hash": "33e924bd7e68b596e6425c693ae2bdb7cfb62547481b61689eec0f95dec0f5bc", "loai": "THANH_VIEN", "stt": 5, "ten": "Thành viên C", "thanh_vien": "LVC_3333_95", "truoc": "93969091d18adce1cdc7430f6beee0d38955fbf150f51d6732d0cf8b31f8c2fb", "vai_tro": "Cổ đông, bán hàng", "von_cam_ket": 3900000}
+{"chung_tu": "786a4ff8baa48154e169d1de1bb9f609818228ded63a69f19f82ad440c4a77a3", "ghi_luc": "2026-11-11T10:00:00+07:00", "hash": "c5e0920e9fe620df2bda552d292c59450778fc086c8fac7d7a0d542923b8de05", "loai": "TIEN_MAT", "mo_ta": "Góp vốn bậc 0", "ngay": "2026-11-11", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "so_tien": 4000000, "stt": 6, "thanh_vien": "NVA_1111_85", "truoc": "33e924bd7e68b596e6425c693ae2bdb7cfb62547481b61689eec0f95dec0f5bc"}
+{"chung_tu": "176a9454b8069f4ac63aeed0a92d6286df7e9c78379e7183998dff3be496ee48", "ghi_luc": "2026-11-11T10:05:00+07:00", "hash": "2478aaa3fb8b7bc5fedd93a0907539715f1296732e7fa713c7586144ad7dbbd9", "loai": "TIEN_MAT", "mo_ta": "Góp vốn bậc 0", "ngay": "2026-11-11", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "so_tien": 4000000, "stt": 7, "thanh_vien": "TTB_2222_90", "truoc": "c5e0920e9fe620df2bda552d292c59450778fc086c8fac7d7a0d542923b8de05"}
+{"chung_tu": "3dbf88b9fb6dacf3bf1799bfb6debb0c046560edf2cb0ff3db681fb594ce9e11", "ghi_luc": "2026-11-12T10:00:00+07:00", "hash": "ed927520671e92bd9df1fd693f129bc435c2b089135daaf9e8c8a315d295c609", "loai": "TIEN_MAT", "mo_ta": "Góp vốn bậc 0", "ngay": "2026-11-12", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "so_tien": 3900000, "stt": 8, "thanh_vien": "LVC_3333_95", "truoc": "2478aaa3fb8b7bc5fedd93a0907539715f1296732e7fa713c7586144ad7dbbd9"}
+{"ghi_luc": "2026-11-13T10:00:00+07:00", "hang_muc": "Máy móc, thiết bị", "hash": "429fb17a78bcbe34d03213cc296e98547f3a4e6cb8cfb14acc01f8f7c5954d71", "loai": "CHI", "mo_ta": "Máy in Bambu Lab A1 (đã kiểm)", "ngay": "2026-11-13", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "nha_cung_cap": "Cửa hàng máy in 3D", "so_hoa_don": "HĐ 0001234", "so_tien": 7000000, "stt": 9, "truoc": "ed927520671e92bd9df1fd693f129bc435c2b089135daaf9e8c8a315d295c609"}
+{"ghi_luc": "2026-11-13T10:05:00+07:00", "hang_muc": "Máy móc, thiết bị", "hash": "522a517cf061acbd736f072ffdf7e3f4081a730b1c791e83c9a8c66a9b3e6c08", "loai": "CHI", "mo_ta": "Máy sấy nhựa", "ngay": "2026-11-13", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "nha_cung_cap": "Cửa hàng máy in 3D", "so_hoa_don": "HĐ 0001235", "so_tien": 1300000, "stt": 10, "truoc": "429fb17a78bcbe34d03213cc296e98547f3a4e6cb8cfb14acc01f8f7c5954d71"}
+{"ghi_luc": "2026-11-14T10:00:00+07:00", "hang_muc": "Dụng cụ, an toàn", "hash": "31d43028a9feb05236f6a5dd88888ca800984a7780a22b8307014907a046cb81", "loai": "CHI", "mo_ta": "Dụng cụ hậu kỳ: kìm, dao, giấy nhám", "ngay": "2026-11-14", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "nha_cung_cap": "Cửa hàng dụng cụ", "so_hoa_don": "HĐ 0567", "so_tien": 1000000, "stt": 11, "truoc": "522a517cf061acbd736f072ffdf7e3f4081a730b1c791e83c9a8c66a9b3e6c08"}
+{"ghi_luc": "2026-11-14T10:05:00+07:00", "hang_muc": "Dụng cụ, an toàn", "hash": "9392ca87bee23b75668f72e016ebc82a07963f05ef6a63232a2b72b5320aaf34", "loai": "CHI", "mo_ta": "Báo khói, ổ cắm thông minh", "ngay": "2026-11-14", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "nha_cung_cap": "Cửa hàng dụng cụ", "so_hoa_don": "HĐ 0568", "so_tien": 600000, "stt": 12, "truoc": "31d43028a9feb05236f6a5dd88888ca800984a7780a22b8307014907a046cb81"}
+{"ghi_luc": "2026-11-15T10:00:00+07:00", "hang_muc": "Nhựa in, vật tư", "hash": "7cafa1f0dcb239dbd02483a3093f820a63771cb774e05ff43cd6954a0949fbb7", "loai": "CHI", "mo_ta": "Nhựa in thử + máy dummy", "ngay": "2026-11-15", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "nha_cung_cap": "Đại lý nhựa 3D", "so_hoa_don": "HĐ 0008001", "so_tien": 1500000, "stt": 13, "truoc": "9392ca87bee23b75668f72e016ebc82a07963f05ef6a63232a2b72b5320aaf34"}
+{"ghi_luc": "2026-11-15T10:05:00+07:00", "hang_muc": "Máy móc, thiết bị", "hash": "95eba2d65b08f264d3eebc2fb476d32a8cd8e7df57c0155a36fa39c4b9988898", "loai": "CHI", "mo_ta": "Đèn chụp ảnh sản phẩm", "ngay": "2026-11-15", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "nha_cung_cap": "Cửa hàng máy in 3D", "so_hoa_don": "HĐ 0001236", "so_tien": 500000, "stt": 14, "truoc": "7cafa1f0dcb239dbd02483a3093f820a63771cb774e05ff43cd6954a0949fbb7"}
+{"ghi_luc": "2026-11-16T09:00:00+07:00", "hash": "92fa188f5814f970651f8a2551907124c7df9d2ac0e283a3ccd6777b7c755782", "loai": "GIO_CONG", "mo_ta": "Thiết kế và in thử ốp Note 10+", "ngay": "2026-11-15", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "phut": 720, "stt": 15, "thanh_vien": "NVA_1111_85", "truoc": "95eba2d65b08f264d3eebc2fb476d32a8cd8e7df57c0155a36fa39c4b9988898"}
+{"ghi_luc": "2026-11-29T09:00:00+07:00", "hash": "dd8d193bfecfa3c3de4655de558272346fa9689970d8628c95da45157c035ce2", "loai": "GIO_CONG", "mo_ta": "In thử, chỉnh khít, chụp ảnh sản phẩm", "ngay": "2026-11-28", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "phut": 1080, "stt": 16, "thanh_vien": "NVA_1111_85", "truoc": "92fa188f5814f970651f8a2551907124c7df9d2ac0e283a3ccd6777b7c755782"}
+{"diem": {"LVC_3333_95": 7800000, "NVA_1111_85": 9500000, "TTB_2222_90": 8000000}, "ghi_luc": "2026-12-08T09:00:00+07:00", "hash": "c63b6c8f0725a190fd123a78df75ead52bf3799d897019e01b0f0e50dc8b3953", "ky": "2026-11", "loai": "CHOT_KY", "mo_ta": "Chốt kỳ (giá trị bằng đồng sau hệ số; chia 1.000 ra điểm)", "stt": 17, "truoc": "dd8d193bfecfa3c3de4655de558272346fa9689970d8628c95da45157c035ce2"}
+{"ghi_luc": "2026-12-11T09:00:00+07:00", "hash": "c8813caf67ed7094952346bb42838fb427b5b238c4659625c5bc6f1ac888b2a0", "loai": "GIO_CONG", "mo_ta": "Bán thử cho khách ngoài, chăm sóc khách", "ngay": "2026-12-10", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "phut": 900, "stt": 18, "thanh_vien": "NVA_1111_85", "truoc": "c63b6c8f0725a190fd123a78df75ead52bf3799d897019e01b0f0e50dc8b3953"}
+{"ghi_luc": "2026-12-23T09:00:00+07:00", "hash": "53de52cd9f9b32e717c1dc22266d27abe945956cd04ed37038c0d0f4862ec225", "loai": "GIO_CONG", "mo_ta": "Đóng gói, giao hàng, sổ sách", "ngay": "2026-12-22", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "phut": 900, "stt": 19, "thanh_vien": "NVA_1111_85", "truoc": "c8813caf67ed7094952346bb42838fb427b5b238c4659625c5bc6f1ac888b2a0"}
+{"ghi_luc": "2026-12-26T20:00:00+07:00", "hash": "aac3a5addcfea21e70bd84e679be5da99f196b97178491d9fc012aab704aea8f", "loai": "THU", "mo_ta": "Bán thử 6 ốp cho khách ngoài", "ngay": "2026-12-26", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "nguon_thu": "Doanh thu bán hàng", "so_hoa_don": "Bậc 0", "so_tien": 1494000, "stt": 20, "truoc": "53de52cd9f9b32e717c1dc22266d27abe945956cd04ed37038c0d0f4862ec225"}
+{"diem": {"LVC_3333_95": 7800000, "NVA_1111_85": 11000000, "TTB_2222_90": 8000000}, "ghi_luc": "2027-01-05T09:00:00+07:00", "hash": "37e783f5a3da4751401830b602789200611e5a3ca5a55539628c725d735cb889", "ky": "2026-12", "loai": "CHOT_KY", "mo_ta": "Chốt kỳ (giá trị bằng đồng sau hệ số; chia 1.000 ra điểm)", "stt": 21, "truoc": "aac3a5addcfea21e70bd84e679be5da99f196b97178491d9fc012aab704aea8f"}
+{"chung_tu": "5225fcc8b9ed82480c0064af13c15523eca80abbdc3696c0ca2658ded08c3757", "ghi_luc": "2027-01-05T10:00:00+07:00", "hash": "0f3c5cbdd1c52c13b70512faac4b3ac4154dbf515fd29e2b0b4cd2f7b7459197", "ket_qua": "Tự động theo Điều 12", "loai": "QUYET_DINH", "mo_ta": "Đạt chỉ tiêu bậc 0: 6 ốp ≥ 200.000 đ bán cho người ngoài. Mở bậc 1.", "stt": 22, "truoc": "37e783f5a3da4751401830b602789200611e5a3ca5a55539628c725d735cb889"}
+{"chung_tu": "a10ba43fcd9c961d596959fe662ef7c59cdf48bf41fccb38e4db49837ae2853a", "ghi_luc": "2027-01-08T10:00:00+07:00", "hash": "f994b78431413f89c6c526556f1d31d19e72dec6fea1011196c3c6352f7d84ab", "loai": "TIEN_MAT", "mo_ta": "Góp vốn bậc 1", "ngay": "2027-01-08", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "so_tien": 2600000, "stt": 23, "thanh_vien": "NVA_1111_85", "truoc": "0f3c5cbdd1c52c13b70512faac4b3ac4154dbf515fd29e2b0b4cd2f7b7459197"}
+{"chung_tu": "36bab89a7106ba531cf2bc406b4ce337a5162aac4bf605c28df443368de6593e", "ghi_luc": "2027-01-09T10:00:00+07:00", "hash": "f8dadc87bad1ea0991f7fe3f1ba464f16b432e74e5e29166e96d4783058a8ee0", "loai": "TIEN_MAT", "mo_ta": "Góp vốn bậc 1", "ngay": "2027-01-09", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "so_tien": 4000000, "stt": 24, "thanh_vien": "TTB_2222_90", "truoc": "f994b78431413f89c6c526556f1d31d19e72dec6fea1011196c3c6352f7d84ab"}
+{"ghi_luc": "2027-01-10T10:00:00+07:00", "hang_muc": "Thuế, phí, đăng ký", "hash": "45767c76a3214bd6f9e7d53506f87f1041e3ee64e930fc7548cf681b4bd7d3f8", "loai": "CHI", "mo_ta": "Lệ phí đăng ký hộ kinh doanh", "ngay": "2027-01-10", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "nha_cung_cap": "UBND phường", "so_hoa_don": "BL 000456", "so_tien": 300000, "stt": 25, "truoc": "f8dadc87bad1ea0991f7fe3f1ba464f16b432e74e5e29166e96d4783058a8ee0"}
+{"ghi_luc": "2027-01-12T10:00:00+07:00", "hang_muc": "Bao bì, đóng gói", "hash": "c7e76972210eaa03f2c7ebfee538caea1cf952849b2724989585e479c1bc2f3d", "loai": "CHI", "mo_ta": "Hộp quà in logo SOHO T&T, 200 cái", "ngay": "2027-01-12", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "nha_cung_cap": "Xưởng bao bì", "so_hoa_don": "HĐ 0004521", "so_tien": 2000000, "stt": 26, "truoc": "45767c76a3214bd6f9e7d53506f87f1041e3ee64e930fc7548cf681b4bd7d3f8"}
+{"ghi_luc": "2027-01-15T10:00:00+07:00", "hang_muc": "Nhựa in, vật tư", "hash": "5d228224ca8509e343aad70688b67b8bb629fec7efc822c4456cbe347357fadd", "loai": "CHI", "mo_ta": "TPU 95A 2 cuộn + PLA 2 cuộn", "ngay": "2027-01-15", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "nha_cung_cap": "Đại lý nhựa 3D", "so_hoa_don": "HĐ 0008812", "so_tien": 2300000, "stt": 27, "truoc": "c7e76972210eaa03f2c7ebfee538caea1cf952849b2724989585e479c1bc2f3d"}
+{"ghi_luc": "2027-01-20T10:00:00+07:00", "hang_muc": "Quảng cáo", "hash": "90aa5e855a18d609f66c0293333d1f59e302ea7814e8bfe474b15af3034c8113", "loai": "CHI", "mo_ta": "Quảng cáo thử Facebook", "ngay": "2027-01-20", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "nha_cung_cap": "Meta", "so_hoa_don": "FB-INV-0120", "so_tien": 1000000, "stt": 28, "truoc": "5d228224ca8509e343aad70688b67b8bb629fec7efc822c4456cbe347357fadd"}
+{"ghi_luc": "2027-02-02T09:00:00+07:00", "hash": "b3130d9f655bc4cd2389e34146c629275d653645f619205a31f051cbcc9cd4ad", "loai": "GIO_CONG", "mo_ta": "Mở shop Shopee, đóng gói, chăm sóc khách", "ngay": "2027-01-31", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "phut": 2700, "stt": 29, "thanh_vien": "NVA_1111_85", "truoc": "90aa5e855a18d609f66c0293333d1f59e302ea7814e8bfe474b15af3034c8113"}
+{"ghi_luc": "2027-02-04T20:00:00+07:00", "hash": "340b76fa7e703262fde937952c74939bc53388ca8031923432399391da7fb518", "loai": "PHAN_DOI", "mo_ta": "Nhật ký công việc tháng 1 chỉ có 40 giờ", "nguoi_ghi": "TTB_2222_90", "nguoi_khai": "thanh-vien-b", "stt": 30, "tham_chieu": 29, "truoc": "b3130d9f655bc4cd2389e34146c629275d653645f619205a31f051cbcc9cd4ad"}
+{"ghi_luc": "2027-02-05T08:00:00+07:00", "hash": "6e6bb6d166e4c7654dc1ad9624d8bcb6019a55a9e25c68a76bf086aa435401ff", "loai": "DIEU_CHINH", "mo_ta": "Ghi nhầm 45 giờ, đúng là 40 giờ theo nhật ký", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "stt": 31, "tham_chieu": 29, "truoc": "340b76fa7e703262fde937952c74939bc53388ca8031923432399391da7fb518"}
+{"ghi_luc": "2027-02-05T08:01:00+07:00", "hash": "01fa8625ce59b26cb1528a3abfd19b9cf736711a57230b9c7049c4456b32d1fb", "loai": "GIO_CONG", "mo_ta": "Mở shop Shopee, đóng gói, chăm sóc khách (ghi lại)", "ngay": "2027-01-31", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "phut": 2400, "stt": 32, "thanh_vien": "NVA_1111_85", "truoc": "6e6bb6d166e4c7654dc1ad9624d8bcb6019a55a9e25c68a76bf086aa435401ff"}
+{"ghi_luc": "2027-02-05T21:00:00+07:00", "hash": "f97c846b66b7cedc20932a62205c88fd7d49715e1ab2541dc7547b0311749567", "loai": "RUT_PHAN_DOI", "mo_ta": "Đã điều chỉnh đúng, rút phản đối", "nguoi_ghi": "TTB_2222_90", "nguoi_khai": "thanh-vien-b", "stt": 33, "tham_chieu": 30, "truoc": "01fa8625ce59b26cb1528a3abfd19b9cf736711a57230b9c7049c4456b32d1fb"}
+{"diem": {"LVC_3333_95": 7800000, "NVA_1111_85": 18200000, "TTB_2222_90": 16000000}, "ghi_luc": "2027-02-12T09:00:00+07:00", "hash": "8cc5945df3b7f7b96c7f70327420fb81230fdf3bd9bb4e77ccc37b20da676d8a", "ky": "2027-01", "loai": "CHOT_KY", "mo_ta": "Chốt kỳ (giá trị bằng đồng sau hệ số; chia 1.000 ra điểm)", "stt": 34, "truoc": "f97c846b66b7cedc20932a62205c88fd7d49715e1ab2541dc7547b0311749567"}
+{"ghi_luc": "2027-03-01T09:00:00+07:00", "hash": "fa246aaf412c91e17267c567f18e7ac0baa3c8695ed7f209810c7ae79d5a0554", "loai": "GIO_CONG", "mo_ta": "Sản xuất, chăm sóc khách, quảng cáo", "ngay": "2027-02-28", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "phut": 2400, "stt": 35, "thanh_vien": "NVA_1111_85", "truoc": "8cc5945df3b7f7b96c7f70327420fb81230fdf3bd9bb4e77ccc37b20da676d8a"}
+{"ghi_luc": "2027-03-02T09:00:00+07:00", "hash": "3b2d2e19c90ea70e8c4b45a9b76962432d343e20d5ec4869eb1dd4b5eb61e0f8", "loai": "THU", "mo_ta": "Doanh thu tháng 2: 12 ốp", "ngay": "2027-02-28", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "nguon_thu": "Doanh thu bán hàng", "so_hoa_don": "Shopee tháng 2", "so_tien": 2988000, "stt": 36, "truoc": "fa246aaf412c91e17267c567f18e7ac0baa3c8695ed7f209810c7ae79d5a0554"}
+{"ghi_luc": "2027-03-02T09:05:00+07:00", "hang_muc": "Phí sàn, vận chuyển", "hash": "bf5f182f3f123d09533ea65351af8e824887c9bd750f65b4bc6c695b74045e99", "loai": "CHI", "mo_ta": "Phí sàn Shopee tháng 2", "ngay": "2027-03-02", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "nha_cung_cap": "Shopee", "so_hoa_don": "SPE-2702", "so_tien": 750000, "stt": 37, "truoc": "3b2d2e19c90ea70e8c4b45a9b76962432d343e20d5ec4869eb1dd4b5eb61e0f8"}
+{"ghi_luc": "2027-03-03T10:00:00+07:00", "hang_muc": "Quảng cáo", "hash": "f8b7b41152b605c6f1c65e63309bad7825eff5dcd8d6386b386fe01137929000", "loai": "CHI", "mo_ta": "Quảng cáo Facebook tháng 3", "ngay": "2027-03-03", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "nha_cung_cap": "Meta", "so_hoa_don": "FB-INV-3301", "so_tien": 1000000, "stt": 38, "truoc": "bf5f182f3f123d09533ea65351af8e824887c9bd750f65b4bc6c695b74045e99"}
+{"diem": {"LVC_3333_95": 7800000, "NVA_1111_85": 20200000, "TTB_2222_90": 16000000}, "ghi_luc": "2027-03-08T09:00:00+07:00", "hash": "cc0820fbf858c74b6f774ec2b2a894edccf249307f398fa8a7eafc296ceba158", "ky": "2027-02", "loai": "CHOT_KY", "mo_ta": "Chốt kỳ (giá trị bằng đồng sau hệ số; chia 1.000 ra điểm)", "stt": 39, "truoc": "f8b7b41152b605c6f1c65e63309bad7825eff5dcd8d6386b386fe01137929000"}
+{"doanh_thu": 74700000, "ghi_luc": "2027-03-21T10:00:00+07:00", "hash": "199513de39993ced0938fba61dc7e0ac1808afe18d53c79b2dba832ab06d0348", "loai": "KHACH_HANG", "ma_doi_chieu": "HD-0012", "mo_ta": "Công ty ABC đặt 30 ốp khắc logo × 249.000 đ, đã thu đủ", "ngay": "2027-03-20", "nguoi_ghi": "LVC_3333_95", "nguoi_khai": "thanh-vien-c", "nguon": "phiếu #7", "stt": 40, "thanh_vien": "LVC_3333_95", "truoc": "cc0820fbf858c74b6f774ec2b2a894edccf249307f398fa8a7eafc296ceba158"}
+{"ghi_luc": "2027-03-23T19:30:00+07:00", "hash": "7c26833f62ffd6f2cf470e0e9f4e72f4f4cb3f92a265554e754f41b2a045154b", "loai": "DIEU_CHINH", "mo_ta": "Gõ thừa số 0: 74.700.000 đúng là 7.470.000", "nguoi_ghi": "LVC_3333_95", "nguoi_khai": "thanh-vien-c", "nguon": "phiếu #8", "stt": 41, "tham_chieu": 40, "truoc": "199513de39993ced0938fba61dc7e0ac1808afe18d53c79b2dba832ab06d0348"}
+{"doanh_thu": 7470000, "ghi_luc": "2027-03-23T19:31:00+07:00", "hash": "8edeaab54f614deace2448e0c68ca0c81ecff3a3ca10db86f999a707c45e2cd1", "loai": "KHACH_HANG", "ma_doi_chieu": "HD-0012", "mo_ta": "Công ty ABC đặt 30 ốp khắc logo × 249.000 đ, đã thu đủ", "ngay": "2027-03-20", "nguoi_ghi": "LVC_3333_95", "nguoi_khai": "thanh-vien-c", "nguon": "phiếu #8", "stt": 42, "thanh_vien": "LVC_3333_95", "truoc": "7c26833f62ffd6f2cf470e0e9f4e72f4f4cb3f92a265554e754f41b2a045154b"}
+{"ghi_luc": "2027-03-24T09:00:00+07:00", "hash": "c20c6c5e5fb5fed941bbb8c8f720ec4dec2c6fa74ddd02ce95b6fb85194f29db", "loai": "THU", "mo_ta": "Công ty ABC thanh toán đơn 30 ốp", "ngay": "2027-03-20", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "nguon_thu": "Doanh thu bán hàng", "so_hoa_don": "HD-0012", "so_tien": 7470000, "stt": 43, "truoc": "8edeaab54f614deace2448e0c68ca0c81ecff3a3ca10db86f999a707c45e2cd1"}
+{"ghi_luc": "2027-03-24T09:05:00+07:00", "hang_muc": "Nhựa in, vật tư", "hash": "193c761946ea7ac2543dda19e4a63c77e78a31d510d856dade5e6144fd3278a8", "loai": "CHI", "mo_ta": "Nhựa TPU cho đơn công ty ABC", "ngay": "2027-03-24", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "nha_cung_cap": "Đại lý nhựa 3D", "so_hoa_don": "HĐ 0009876", "so_tien": 1200000, "stt": 44, "truoc": "c20c6c5e5fb5fed941bbb8c8f720ec4dec2c6fa74ddd02ce95b6fb85194f29db"}
+{"ghi_luc": "2027-04-01T09:00:00+07:00", "hash": "018dc828fa282207155e59043e9f8e91b24642e1e4eb37d0724dbed513da36df", "loai": "GIO_CONG", "mo_ta": "Sản xuất đơn doanh nghiệp, chăm sóc khách", "ngay": "2027-03-31", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "phut": 2400, "stt": 45, "thanh_vien": "NVA_1111_85", "truoc": "193c761946ea7ac2543dda19e4a63c77e78a31d510d856dade5e6144fd3278a8"}
+{"diem": {"LVC_3333_95": 8547000, "NVA_1111_85": 22200000, "TTB_2222_90": 16000000}, "ghi_luc": "2027-04-08T09:00:00+07:00", "hash": "a010dd87bc4ac554786d0fa087ee5a02114891f02133e9d7f728a9b703ca31f3", "ky": "2027-03", "loai": "CHOT_KY", "mo_ta": "Chốt kỳ (giá trị bằng đồng sau hệ số; chia 1.000 ra điểm)", "stt": 46, "truoc": "018dc828fa282207155e59043e9f8e91b24642e1e4eb37d0724dbed513da36df"}
+{"ghi_luc": "2027-04-30T21:00:00+07:00", "hash": "0c6f61ef1d30ede9fc6ff444b4c45fec5b623fd2a025d66afa40af0a97761337", "loai": "GIO_CONG", "mo_ta": "Sản xuất, mẫu mới iPhone", "ngay": "2027-04-30", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "phut": 2400, "stt": 47, "thanh_vien": "NVA_1111_85", "truoc": "a010dd87bc4ac554786d0fa087ee5a02114891f02133e9d7f728a9b703ca31f3"}
+{"ghi_luc": "2027-04-30T21:30:00+07:00", "hash": "6258993bedf912313910ba55071d715d84e1c3164a19a6a5dfb2985f8d348d7a", "loai": "THU", "mo_ta": "Doanh thu tháng 4: 14 ốp", "ngay": "2027-04-30", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "nguon_thu": "Doanh thu bán hàng", "so_hoa_don": "Shopee tháng 4", "so_tien": 3486000, "stt": 48, "truoc": "0c6f61ef1d30ede9fc6ff444b4c45fec5b623fd2a025d66afa40af0a97761337"}
+{"ghi_luc": "2027-04-30T21:31:00+07:00", "hang_muc": "Phí sàn, vận chuyển", "hash": "f1afe8ed1b3e714e8e0ad5977d8479204eb495801ba0f875213a6bab2b92be5c", "loai": "CHI", "mo_ta": "Phí sàn Shopee tháng 4", "ngay": "2027-04-30", "nguoi_ghi": "NVA_1111_85", "nguoi_khai": "thanh-vien-a", "nha_cung_cap": "Shopee", "so_hoa_don": "SPE-2704", "so_tien": 870000, "stt": 49, "truoc": "6258993bedf912313910ba55071d715d84e1c3164a19a6a5dfb2985f8d348d7a"}
+{"diem": {"LVC_3333_95": 8547000, "NVA_1111_85": 24200000, "TTB_2222_90": 16000000}, "ghi_luc": "2027-05-08T09:00:00+07:00", "hash": "43551d6ef900003e48e28b6b4ddb1632fa672f9bddcbcdfbebd0815a9dff0ace", "ky": "2027-04", "loai": "CHOT_KY", "mo_ta": "Chốt kỳ (giá trị bằng đồng sau hệ số; chia 1.000 ra điểm)", "stt": 50, "truoc": "f1afe8ed1b3e714e8e0ad5977d8479204eb495801ba0f875213a6bab2b92be5c"}
 /*MAU-KET-THUC*/
 </script>
 
@@ -363,7 +400,9 @@ const sha256hex = (() => {
 /* ===== Quy tắc băm & tính điểm: bản JS của cong-cu/soquy.py ===== */
 const GENESIS = "0".repeat(64);
 const LOAI_DIEM = { TIEN_MAT: "von", CHI_PHI: "von", TAI_SAN: "von", CHO_MUON: "von", GIO_CONG: "cong", KHACH_HANG: "cong" };
-const LOAI_KHAC = ["KHOI_TAO", "QUY_TAC", "DIEU_LE", "THANH_VIEN", "PHAN_DOI", "RUT_PHAN_DOI", "DIEU_CHINH", "QUYET_DINH", "ROI_DI", "CHOT_KY"];
+const HANG_MUC = ["Máy móc, thiết bị", "Nhựa in, vật tư", "Bao bì, đóng gói", "Quảng cáo", "Phí sàn, vận chuyển", "Dụng cụ, an toàn", "Thuế, phí, đăng ký", "Hoàn tiền khách", "Chia lợi nhuận, hoàn vốn", "Khác"];
+const NGUON_THU = ["Doanh thu bán hàng", "Thu khác"];
+const LOAI_KHAC = ["THU", "CHI", "KHOI_TAO", "QUY_TAC", "DIEU_LE", "THANH_VIEN", "PHAN_DOI", "RUT_PHAN_DOI", "DIEU_CHINH", "QUYET_DINH", "ROI_DI", "CHOT_KY"];
 const MAT_DIEM_CONG = { CHINH_DANG: 0, KHONG_LOI: 0, TU_ROI: 50, VI_PHAM: 100 };
 const canon = v => {
   if (Array.isArray(v)) return "[" + v.map(canon).join(",") + "]";
@@ -385,10 +424,11 @@ function giaTri(e, q) {
 
 function tinh(so, denNgay, kyCuoi) {
   if (!denNgay) { const cuoi = so.reduce((m, e) => (day(e.ghi_luc) > m ? day(e.ghi_luc) : m), "0000-00-00"); denNgay = cuoi > todayISO() ? cuoi : todayISO(); }
-  let qt = null; const tv = {}, dongGop = [], phanDoi = {}, huy = {}, roi = {}; let dieuLe = null;
+  let qt = null; const tv = {}, dongGop = [], phanDoi = {}, huy = {}, roi = {}, dongTien = []; let dieuLe = null;
   for (const e of so) {
     if (day(e.ghi_luc) > denNgay) break;
     const l = e.loai;
+    if (l === "THU" || l === "CHI" || l === "TIEN_MAT") dongTien.push(e);
     if (l === "KHOI_TAO" || l === "QUY_TAC") qt = e.quy_tac;
     else if (l === "DIEU_LE") dieuLe = e;
     else if (l === "THANH_VIEN") tv[e.thanh_vien] = { ten: e.ten || "", vai_tro: e.vai_tro || "", von_cam_ket: e.von_cam_ket || 0, github: e.github || "" };
@@ -417,7 +457,21 @@ function tinh(so, denNgay, kyCuoi) {
   }
   for (const m in roi) if (kq[m]) kq[m].cong -= Math.floor(kq[m].cong * MAT_DIEM_CONG[roi[m]] / 100);
   for (const m in kq) kq[m].tong = kq[m].von + kq[m].cong;
-  return { denNgay, quyTac: qt, thanhVien: tv, diem: kq, trangThai, gt, dieuLe, roi };
+  return { denNgay, quyTac: qt, thanhVien: tv, diem: kq, trangThai, gt, dieuLe, roi, quy: tinhQuy(dongTien, huy) };
+}
+
+function tinhQuy(dongTien, huy) {
+  const q = { gop_von: 0, doanh_thu: 0, thu_khac: 0, chi: 0, so_du: 0, theo_hang_muc: {}, giao_dich: [] };
+  for (const e of dongTien) {
+    if (e.stt in huy) continue;
+    const t = e.so_tien; let d;
+    if (e.loai === "TIEN_MAT") { q.gop_von += t; d = t; }
+    else if (e.loai === "THU") { q[e.nguon_thu === "Doanh thu bán hàng" ? "doanh_thu" : "thu_khac"] += t; d = t; }
+    else { q.chi += t; d = -t; q.theo_hang_muc[e.hang_muc] = (q.theo_hang_muc[e.hang_muc] || 0) + t; }
+    q.so_du += d;
+    q.giao_dich.push({ stt: e.stt, so_tien: d, so_du: q.so_du });
+  }
+  return q;
 }
 
 function kiemTra(so, dieuLeSha) {
@@ -447,6 +501,12 @@ function kiemTra(so, dieuLeSha) {
     }
     if (["PHAN_DOI", "RUT_PHAN_DOI", "DIEU_CHINH"].includes(l) && (!ids.has(e.tham_chieu) || e.tham_chieu === e.stt))
       loi.push(`${nhan}: tham chiếu tới dòng ${e.tham_chieu} không hợp lệ`);
+    if (l === "THU" || l === "CHI") {
+      if (!Number.isInteger(e.so_tien) || e.so_tien <= 0) loi.push(`${nhan}: 'so_tien' phải là số nguyên dương`);
+      if (l === "CHI" && !HANG_MUC.includes(e.hang_muc)) loi.push(`${nhan}: hạng mục chi “${e.hang_muc}” không có trong danh sách`);
+      if (l === "THU" && !NGUON_THU.includes(e.nguon_thu)) loi.push(`${nhan}: nguồn thu “${e.nguon_thu}” không hợp lệ`);
+      if ((e.ngay || "9") > (e.ghi_luc || "").slice(0, 10)) loi.push(`${nhan}: ngày giao dịch ở sau ngày ghi`);
+    }
     if (l === "ROI_DI" && !(e.truong_hop in MAT_DIEM_CONG)) loi.push(`${nhan}: trường hợp rời đi không hợp lệ`);
   });
   const dl = so.filter(e => e.loai === "DIEU_LE");
@@ -475,10 +535,10 @@ const col = i => `var(${COLORS[i % COLORS.length]})`;
 const TEN_LOAI = { KHOI_TAO: "Khởi tạo quy tắc", QUY_TAC: "Đổi quy tắc", DIEU_LE: "Điều lệ", THANH_VIEN: "Thành viên mới",
   TIEN_MAT: "Góp tiền", CHI_PHI: "Chi phí tự trả", TAI_SAN: "Góp tài sản", CHO_MUON: "Cho mượn tài sản", GIO_CONG: "Giờ công",
   KHACH_HANG: "Khách mang về", PHAN_DOI: "Phản đối", RUT_PHAN_DOI: "Rút phản đối", DIEU_CHINH: "Điều chỉnh",
-  QUYET_DINH: "Quyết định", ROI_DI: "Rời dự án", CHOT_KY: "Chốt kỳ" };
+  QUYET_DINH: "Quyết định", ROI_DI: "Rời dự án", CHOT_KY: "Chốt kỳ", THU: "Thu tiền", CHI: "Chi tiền" };
 const VIET_TAT = { KHOI_TAO: "Khởi", QUY_TAC: "Q.tắc", DIEU_LE: "Đ.lệ", THANH_VIEN: "TV", TIEN_MAT: "Tiền", CHI_PHI: "Chi", TAI_SAN: "T.sản",
   CHO_MUON: "Mượn", GIO_CONG: "Giờ", KHACH_HANG: "Khách", PHAN_DOI: "P.đối", RUT_PHAN_DOI: "Rút", DIEU_CHINH: "Đ.chỉnh",
-  QUYET_DINH: "Q.định", ROI_DI: "Rời", CHOT_KY: "Chốt" };
+  QUYET_DINH: "Q.định", ROI_DI: "Rời", CHOT_KY: "Chốt", THU: "Thu", CHI: "Chi" };
 const PILL = { da_xac_nhan: ["p-ok", "Đã xác nhận"], cho_xac_nhan: ["p-wait", "Chờ 7 ngày"], bi_phan_doi: ["p-bad", "Đang bị phản đối"], da_huy: ["p-mute", "Đã huỷ"] };
 
 const S = { goc: [], so: [], nguon: "", mau: true, tamper: false, dlSha: null, sel: null, niemPhong: null, lechCu: "" };
@@ -580,6 +640,7 @@ function ve() {
   veXuHuong(so, ms);
   veThu(st, ms, tong);
   veGiaiThe(st, ms, tong, tongTien);
+  veQuy(so, st);
   veSo(so, st, kt, firstBad);
 
   /* điều lệ */
@@ -658,6 +719,22 @@ function veGiaiThe(st, ms, tong, tongTien) {
       <td class="num delta ${net > 0.5 ? "up" : net < -0.5 ? "down" : ""}">${net > 0 ? "+" : ""}${fmt(net)}</td></tr>`; }).join("")}</tbody>`;
 }
 
+function veQuy(so, st) {
+  const q = st.quy, byStt = Object.fromEntries(so.map(e => [e.stt, e]));
+  $("qDu").textContent = fmt(q.so_du) + " đ"; $("qDu").className = "quy-num" + (q.so_du < 0 ? " neg" : "");
+  $("qDuNote").textContent = q.giao_dich.length ? `Sau ${q.giao_dich.length} giao dịch. Phải khớp sao kê ngân hàng (Điều 10.5).` : "Chưa có giao dịch nào.";
+  $("qGop").textContent = "+" + fmt(q.gop_von); $("qThu").textContent = "+" + fmt(q.doanh_thu); $("qKhac").textContent = "+" + fmt(q.thu_khac); $("qChi").textContent = "−" + fmt(q.chi);
+  const hm = Object.entries(q.theo_hang_muc).sort((a, b) => b[1] - a[1]), mx = hm.length ? hm[0][1] : 1;
+  $("qHm").innerHTML = '<div class="eyebrow" style="margin-bottom:6px">Đã chi theo hạng mục</div>' + (hm.length ? hm.map(([k, v]) =>
+    `<div class="hm-row"><span>${esc(k)}</span><span class="bar"><i style="width:${v / mx * 100}%"></i></span><span class="num">${fmt(v)}</span></div>`).join("") : '<span class="muted" style="font-size:.85rem">Chưa có khoản chi.</span>');
+  const rows = q.giao_dich.slice().reverse();
+  $("tblQuy").innerHTML = rows.length ? `<thead><tr><th>#</th><th>Ngày</th><th>Loại</th><th>Nội dung</th><th>Số HĐ</th><th>Nhà cung cấp / người nhận</th><th class="num">Số tiền</th><th class="num">Số dư sau</th></tr></thead><tbody>${rows.map(g => {
+    const e = byStt[g.stt], loai = e.loai === "CHI" ? `Chi · ${esc(e.hang_muc)}` : e.loai === "THU" ? esc(e.nguon_thu) : `Góp vốn · ${esc(e.thanh_vien)}`;
+    return `<tr data-i="${e.stt}"><td class="num muted">${e.stt}</td><td class="num">${esc((e.ngay || "").split("-").reverse().join("/"))}</td><td style="white-space:nowrap">${loai}</td><td>${esc(e.mo_ta)}</td>
+      <td class="mono">${esc(e.so_hoa_don || e.ma_doi_chieu || "")}</td><td>${esc(e.nha_cung_cap || "")}</td>
+      <td class="num ${g.so_tien < 0 ? "neg" : "pos"}">${g.so_tien < 0 ? "−" : "+"}${fmt(Math.abs(g.so_tien))}</td><td class="num"><b>${fmt(g.so_du)}</b></td></tr>`; }).join("")}</tbody>` : "";
+}
+
 function moTa(e) {
   const r = n => fmt(n) + " đ";
   switch (e.loai) {
@@ -670,6 +747,8 @@ function moTa(e) {
     case "CHOT_KY": return `Kỳ ${esc(e.ky)} · ${Object.entries(e.diem).map(([m, v]) => `${m} ${pts(v)}`).join(" · ")}`;
     case "QUYET_DINH": return `${esc(e.mo_ta)} <span class="muted">(${esc(e.ket_qua)})</span>`;
     case "ROI_DI": return `${esc(e.thanh_vien)} · ${esc(e.truong_hop)}`;
+    case "CHI": return `<b>−${r(e.so_tien)}</b> · ${esc(e.hang_muc)} · ${esc(e.mo_ta)}${e.so_hoa_don ? ` · <span class="mono">${esc(e.so_hoa_don)}</span>` : ""}`;
+    case "THU": return `<b>+${r(e.so_tien)}</b> · ${esc(e.nguon_thu)} · ${esc(e.mo_ta)}`;
     case "KHOI_TAO": case "QUY_TAC": return `Giờ công ${fmt(e.quy_tac.don_gia_gio)} đ · tiền ×${e.quy_tac.he_so.TIEN_MAT} · khách ${e.quy_tac.ty_le_khach_pt}% · trần ${e.quy_tac.tran_gio_thang} giờ/tháng · phản đối ${e.quy_tac.ngay_phan_doi} ngày`;
     default: return esc(e.mo_ta);
   }
