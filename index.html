@@ -627,7 +627,7 @@ function ve() {
   let npTxt = "";
   if (!S.mau && S.niemPhong) {
     const np = S.niemPhong, r = so[np.stt - 1];
-    if (!r) { kt.loi.unshift(`Sổ này chỉ có ${so.length} dòng, ngắn hơn bản chính thức (${np.stt} dòng). Có thể là sổ cũ hoặc sổ giả: tải lại file từ kho soho-tt.`); }
+    if (!r) { kt.canhBao.unshift(`Sổ trên máy này CŨ: có ${so.length} dòng, bản chính thức đã có ${np.stt} dòng. Bạn vẫn khai báo được (bot luôn ghi vào bản mới nhất), nhưng nên tải sổ mới để thấy đúng số liệu và tránh khai trùng.`); npTxt = '<b style="color:var(--warn)">Sổ cũ hơn bản chính thức</b>'; }
     else if (r.hash !== np.hash) { kt.loi.unshift(`KHÔNG KHỚP dấu niêm phong chính thức ở dòng ${np.stt}. Đây không phải sổ thật của SOHO T&T.`); kt.hong.add(np.stt); }
     else npTxt = `<span style="color:var(--ok)"><b>✓ Khớp niêm phong chính thức</b> đến dòng ${np.stt}${so.length > np.stt ? ` (+${so.length - np.stt} dòng mới hơn)` : ""}</span>`;
   }
