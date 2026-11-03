@@ -148,6 +148,15 @@ a.btn.primary{background:var(--bronze);border-color:var(--bronze);color:var(--bg
 .hm-row{display:grid;grid-template-columns:minmax(0,9.5em) 1fr auto;gap:8px;align-items:center;font-size:.82rem;margin-bottom:5px}
 .hm-row .bar{height:10px;border-radius:5px;background:var(--mute-bg);overflow:hidden}
 .hm-row .bar i{display:block;height:100%;background:var(--bronze)}
+.ketnoi ol.buoc{margin:0;padding-left:20px;display:grid;gap:6px}.ketnoi a{color:var(--bronze-ink)}
+.kn-row{display:flex;gap:8px;flex-wrap:wrap}.kn-row input{flex:1 1 260px;min-width:0;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:7px 10px}
+details.tc{border:1px dashed var(--line);border-radius:10px;padding:10px 14px}
+details.tc summary{cursor:pointer;font-weight:600;color:var(--bronze-ink)}
+details.tc[open] summary{margin-bottom:10px}
+details.tc .fields{margin-bottom:10px}
+.gui{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ketqua{border-radius:10px;padding:10px 12px;font-size:.88rem;background:var(--mute-bg);white-space:pre-wrap}
+.ketqua.ok{background:var(--ok-bg)} .ketqua.bad{background:var(--bad-bg)}
 /* sổ */
 .filters{display:flex;gap:8px;flex-wrap:wrap}
 .filters select{width:auto}
@@ -191,10 +200,22 @@ footer{font-size:.8rem;color:var(--muted)}
       <label class="btn" title="Chọn file so-cai.jsonl, hoặc trên GitHub bấm Copy raw file rồi dán (Ctrl+V / ⌘V) vào trang này. Sổ chỉ được đọc trong trình duyệt, không gửi đi đâu.">Mở file sổ cái<input type="file" id="fileSo" accept=".jsonl,.json,.txt"></label>
       <button id="btnTamper" type="button">Thử làm giả 1 con số</button>
       <label class="asof" for="asof">Xem tại ngày <input type="date" id="asof"></label>
+      <button type="button" id="btnKetNoi">Kết nối GitHub</button>
     </div>
   </header>
 
   <div class="status" id="status" aria-live="polite"></div>
+
+  <section class="card ketnoi" id="ketNoi" hidden>
+    <div class="sec-head"><h2>Kết nối GitHub trên máy này</h2><span class="muted" id="knTrangThai"></span></div>
+    <p class="muted" style="margin:0">Khi kết nối, trang <b>tự tải sổ mới nhất</b> mỗi lần mở và <b>gửi phiếu thẳng</b> từ đây, không phải qua trang GitHub. Khoá chỉ lưu trong trình duyệt này, không gửi đi đâu ngoài GitHub. Người gửi phiếu vẫn là tài khoản của bạn, và bot vẫn kiểm tra trước khi ghi sổ.</p>
+    <ol class="buoc">
+      <li>Mở <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">trang tạo khoá GitHub ↗</a>. Đặt tên “Dashboard SOHO T&amp;T”, hạn dùng tuỳ bạn.</li>
+      <li>Ở <b>Repository access</b> chọn <b>Only select repositories → soho-tt</b>. Ở <b>Permissions</b> cho <b>Contents: Read-only</b> và <b>Issues: Read and write</b>. Bấm <b>Generate token</b> rồi chép khoá.</li>
+      <li>Dán khoá vào ô dưới rồi bấm <b>Lưu và kết nối</b>.</li>
+    </ol>
+    <div class="kn-row"><input type="password" id="knKhoa" placeholder="github_pat_…" autocomplete="off"><button type="button" class="primary" id="knLuu">Lưu và kết nối</button><button type="button" id="knXoa">Xoá khoá khỏi máy này</button></div>
+  </section>
 
   <section class="card nap" id="napSo" hidden>
     <h2>Nạp sổ cái thật</h2>
@@ -222,12 +243,28 @@ footer{font-size:.8rem;color:var(--muted)}
   </section>
 
   <section class="card" aria-labelledby="h-quy">
-    <div class="sec-head"><h2 id="h-quy">Quỹ dự án</h2><a class="btn" id="btnThuChi" target="_blank" rel="noopener" href="https://github.com/triettran261192-code/soho-tt/issues/new?template=5-thu-chi.yml">Ghi thu / chi ↗</a></div>
+    <div class="sec-head"><h2 id="h-quy">Quỹ dự án</h2><span class="muted" style="font-size:.8rem">Chỉ Người vận hành ghi được thu chi (Điều 10.5)</span></div>
     <div class="quy-top">
       <div class="quy-du"><div class="eyebrow">Số dư tài khoản theo sổ</div><div class="quy-num" id="qDu">0 đ</div><div class="muted" id="qDuNote" style="font-size:.8rem"></div></div>
       <div class="quy-kpi"><div><span class="muted">Góp vốn</span><b id="qGop"></b></div><div><span class="muted">Doanh thu</span><b id="qThu"></b></div><div><span class="muted">Thu khác</span><b id="qKhac"></b></div><div><span class="muted">Đã chi</span><b id="qChi" class="neg"></b></div></div>
       <div class="quy-hm" id="qHm"></div>
     </div>
+    <details class="tc" id="tcBox">
+      <summary>Ghi một khoản thu / chi</summary>
+      <div class="fields">
+        <label for="tcLoai">Loại<select id="tcLoai"><option>Chi</option><option>Thu doanh thu bán hàng</option><option>Thu khác</option></select></label>
+        <label for="tcTien">Số tiền (đ)<input type="number" id="tcTien" min="0" step="1000" placeholder="1300000"></label>
+        <label for="tcHm" id="tcHmNhan">Hạng mục chi<select id="tcHm"></select></label>
+        <label for="tcNgay">Ngày giao dịch<input type="date" id="tcNgay"></label>
+        <label for="tcMoTa" class="span2">Nội dung<input type="text" id="tcMoTa" placeholder="Mua máy sấy nhựa"></label>
+        <label for="tcHd">Số hoá đơn / chứng từ<input type="text" id="tcHd" placeholder="HĐ 0001234"></label>
+        <label for="tcNcc">Nhà cung cấp / người nhận<input type="text" id="tcNcc" placeholder="Cửa hàng ABC"></label>
+        <label for="tcMaNh" class="span2">Mã giao dịch ngân hàng (nếu có)<input type="text" id="tcMaNh" placeholder="FT26307…"></label>
+      </div>
+      <div class="kq"><div><div class="eyebrow">Số dư sau giao dịch</div><div class="kq-num" id="tcSau">0 đ</div><div class="muted" id="tcCanh" style="font-size:.8rem"></div></div>
+        <div class="gui"><button type="button" class="primary" id="tcGuiThang" hidden>Gửi và ghi sổ</button><a class="btn" id="tcGui" href="#" target="_blank" rel="noopener">Mở phiếu trên GitHub ↗</a></div></div>
+      <div class="ketqua" id="tcKq" hidden></div>
+    </details>
     <div class="tbl"><table id="tblQuy"></table></div>
   </section>
 
@@ -260,7 +297,8 @@ footer{font-size:.8rem;color:var(--muted)}
         <label for="kMoTa" class="span2">Mô tả<input type="text" id="kMoTa" placeholder="Công ty ABC đặt 30 ốp khắc logo"></label>
       </div>
       <div class="kq"><div><div class="eyebrow">Điểm của khai báo này</div><div class="kq-num" id="kDiem">+747</div><div class="muted" id="kCach" style="font-size:.8rem"></div></div>
-        <a class="btn primary" id="kGui" href="#" target="_blank" rel="noopener">Gửi phiếu khai báo ↗</a></div>
+        <div class="gui"><button type="button" class="primary" id="kGuiThang" hidden>Gửi khai báo</button><a class="btn primary" id="kGui" href="#" target="_blank" rel="noopener">Gửi phiếu khai báo ↗</a></div></div>
+      <div class="ketqua" id="kKq" hidden></div>
       <div class="tbl"><table id="tblTry"></table></div>
       <p class="muted" style="margin:0;font-size:.8rem">Nút gửi mở phiếu đã điền sẵn trên GitHub. Bạn đăng nhập bằng tài khoản của mình, kiểm lại rồi bấm <b>Create</b>. Bot ghi vào sổ trong khoảng một phút và trả lời ngay trong phiếu.</p>
     </section>
@@ -719,7 +757,71 @@ function veGiaiThe(st, ms, tong, tongTien) {
       <td class="num delta ${net > 0.5 ? "up" : net < -0.5 ? "down" : ""}">${net > 0 ? "+" : ""}${fmt(net)}</td></tr>`; }).join("")}</tbody>`;
 }
 
+/* ===== Kết nối GitHub (khoá cá nhân, chỉ trong trình duyệt này) ===== */
+const KHOA = () => { try { return localStorage.getItem("gh-khoa") || ""; } catch (_) { return ""; } };
+const gh = async (duong, opt = {}) => {
+  const r = await fetch("https://api.github.com" + duong, { ...opt, headers: { Authorization: "Bearer " + KHOA(), Accept: "application/vnd.github+json", ...(opt.headers || {}) } });
+  if (!r.ok) { const t = await r.text(); throw new Error(r.status === 401 ? "Khoá không đúng hoặc đã hết hạn" : r.status === 403 || r.status === 404 ? "Khoá không có quyền với kho soho-tt (cần Contents: Read, Issues: Read and write)" : `GitHub báo lỗi ${r.status}: ${t.slice(0, 120)}`); }
+  return r;
+};
+S.ghUser = "";
+async function ketNoiLai() {
+  const coKhoa = !!KHOA();
+  $("btnKetNoi").textContent = coKhoa ? (S.ghUser ? "@" + S.ghUser : "Đã kết nối") : "Kết nối GitHub";
+  $("kGuiThang").hidden = $("tcGuiThang").hidden = !coKhoa;
+  $("kGui").classList.toggle("primary", !coKhoa);
+  if (!coKhoa) return false;
+  try {
+    S.ghUser = (await (await gh("/user")).json()).login; $("btnKetNoi").textContent = "@" + S.ghUser;
+    $("knTrangThai").textContent = "Đã kết nối: @" + S.ghUser;
+    return true;
+  } catch (e) { $("knTrangThai").textContent = e.message; return false; }
+}
+async function taiSoMoi(laLanDau) {
+  const r = await gh(`/repos/${REPO}/contents/so-cai/so-cai.jsonl?ref=main&t=${Date.now()}`, { headers: { Accept: "application/vnd.github.raw" } });
+  const t = await r.text(); nap(t, "Sổ thật · tải từ GitHub lúc " + new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }), false);
+}
+const thanPhieu = (nhan, gt) => Object.entries(nhan).map(([k, l]) => `### ${l}\n\n${gt[k] ? gt[k] : "_No response_"}`).join("\n\n");
+async function guiPhieu(tieuDe, than, hop) {
+  hop.hidden = false; hop.className = "ketqua"; hop.textContent = "Đang gửi phiếu…";
+  const is = await (await gh(`/repos/${REPO}/issues`, { method: "POST", body: JSON.stringify({ title: tieuDe, body: than }) })).json();
+  hop.innerHTML = `Đã gửi <a href="${is.html_url}" target="_blank" rel="noopener">phiếu #${is.number}</a>. Bot đang kiểm tra và ghi sổ, thường mất 30–60 giây…`;
+  for (let i = 0; i < 40; i++) {
+    await new Promise(r => setTimeout(r, 6000));
+    const cm = await (await gh(`/repos/${REPO}/issues/${is.number}/comments`)).json();
+    const bot = cm.find(c => c.user && c.user.type === "Bot");
+    if (bot) {
+      const ok = bot.body.trim().startsWith("✅");
+      hop.className = "ketqua " + (ok ? "ok" : "bad");
+      hop.textContent = bot.body.replace(/\*\*/g, "").replace(/\|[-| ]+\|\n/g, "").replace(/^\| *\| *\|\n/m, "").replace(/\|/g, " ").replace(/`/g, "").replace(/~~/g, "");
+      if (ok) await taiSoMoi();
+      return ok;
+    }
+  }
+  hop.innerHTML += " Bot chưa trả lời sau 4 phút, xem trực tiếp trong phiếu.";
+}
+
+const NHAN_TC = { loai_gd: "Loại giao dịch", so_tien_gd: "Số tiền (đồng)", hang_muc: "Hạng mục chi", ngay: "Ngày giao dịch", mo_ta: "Nội dung", so_hoa_don: "Số hoá đơn / chứng từ", nha_cung_cap: "Nhà cung cấp / người nhận", ma_ngan_hang: "Mã giao dịch ngân hàng" };
+const NHAN_KB = { loai: "Loại đóng góp", thanh_vien: "Mã thành viên được ghi nhận", so_luong: "Số tiền (đồng) hoặc số giờ", ngay: "Ngày", mo_ta: "Mô tả", ma_doi_chieu: "Mã đơn / số hoá đơn / mã giao dịch" };
+function phieuThuChi() {
+  const loai = $("tcLoai").value, chi = loai === "Chi", tien = Math.round(+$("tcTien").value || 0);
+  const gt = { loai_gd: loai, so_tien_gd: tien ? fmt(tien) : "", hang_muc: chi ? $("tcHm").value : "", ngay: vnDate($("tcNgay").value), mo_ta: $("tcMoTa").value.trim(), so_hoa_don: $("tcHd").value.trim(), nha_cung_cap: $("tcNcc").value.trim(), ma_ngan_hang: $("tcMaNh").value.trim() };
+  return { gt, tieuDe: `[Thu chi] ${chi ? "Chi · " + $("tcHm").value : loai}`, tien, chi };
+}
+function veThuChi(st) {
+  if (!$("tcHm").options.length) $("tcHm").innerHTML = HANG_MUC.map(h => `<option>${esc(h)}</option>`).join("");
+  if (!$("tcNgay").value) $("tcNgay").value = todayISO();
+  const p = phieuThuChi(), du = st.quy.so_du, sau = du + (p.chi ? -p.tien : p.tien);
+  $("tcHmNhan").hidden = !p.chi;
+  $("tcSau").textContent = fmt(sau) + " đ"; $("tcSau").className = "kq-num" + (sau < 0 ? " neg" : "");
+  const thieu = [!p.tien && "số tiền", !p.gt.mo_ta && "nội dung", p.chi && !p.gt.so_hoa_don && "số hoá đơn"].filter(Boolean);
+  $("tcCanh").textContent = sau < 0 ? "Lớn hơn số dư hiện tại, bot sẽ từ chối" : thieu.length ? "Còn thiếu: " + thieu.join(", ") : `Hiện có ${fmt(du)} đ`;
+  $("tcGuiThang").disabled = sau < 0 || thieu.length > 0;
+  $("tcGui").href = ghUrl("5-thu-chi.yml", p.tieuDe, p.gt);
+}
+
 function veQuy(so, st) {
+  veThuChi(st);
   const q = st.quy, byStt = Object.fromEntries(so.map(e => [e.stt, e]));
   $("qDu").textContent = fmt(q.so_du) + " đ"; $("qDu").className = "quy-num" + (q.so_du < 0 ? " neg" : "");
   $("qDuNote").textContent = q.giao_dich.length ? `Sau ${q.giao_dich.length} giao dịch. Phải khớp sao kê ngân hàng (Điều 10.5).` : "Chưa có giao dịch nào.";
@@ -806,6 +908,9 @@ $("fileDl").addEventListener("change", ev => { const f = ev.target.files[0]; if 
 (async () => {
   const mau = $("mau").textContent;
   try { const r = await fetch("niem-phong.json", { cache: "no-store" }); if (r.ok) S.niemPhong = await r.json(); } catch (_) {}
+  if (KHOA() && location.protocol.startsWith("http")) {
+    try { if (await ketNoiLai()) { await taiSoMoi(); return; } } catch (e) { console.warn(e); }
+  }
   try {
     if (location.protocol.startsWith("http") && !location.hostname.endsWith("claude.ai") && !location.hostname.endsWith("claudeusercontent.com")) {
       const r = await fetch("../so-cai/so-cai.jsonl", { cache: "no-store" });
@@ -826,4 +931,28 @@ function chuaNap() {
   $("status").className = "status"; $("status").innerHTML = '<div class="seal" style="background:var(--mute-bg);color:var(--muted)">?</div><div><h2>Chưa có sổ trên máy này</h2><div class="facts">Làm 3 bước bên dưới để xem sổ cái thật của SOHO T&amp;T.</div></div>';
 }
 $("btnMau").addEventListener("click", () => nap($("mau").textContent, "Sổ MẪU · Phụ lục A · không phải dữ liệu thật", true));
+["tcLoai", "tcTien", "tcHm", "tcNgay", "tcMoTa", "tcHd", "tcNcc", "tcMaNh"].forEach(id => $(id).addEventListener("input", ve));
+$("btnKetNoi").addEventListener("click", () => { $("ketNoi").hidden = !$("ketNoi").hidden; if (!$("ketNoi").hidden) $("ketNoi").scrollIntoView({ block: "nearest" }); });
+$("knLuu").addEventListener("click", async () => {
+  const k = $("knKhoa").value.trim(); if (!k) return;
+  try { localStorage.setItem("gh-khoa", k); } catch (_) { $("knTrangThai").textContent = "Trình duyệt này không cho lưu khoá"; return; }
+  $("knKhoa").value = ""; $("knTrangThai").textContent = "Đang kiểm tra khoá…";
+  if (await ketNoiLai()) { try { await taiSoMoi(); $("ketNoi").hidden = true; } catch (e) { $("knTrangThai").textContent = e.message; } }
+});
+$("knXoa").addEventListener("click", () => { try { localStorage.removeItem("gh-khoa"); } catch (_) {} S.ghUser = ""; $("knTrangThai").textContent = "Đã xoá khoá khỏi máy này"; ketNoiLai(); });
+$("tcGuiThang").addEventListener("click", async () => {
+  const p = phieuThuChi(); $("tcGuiThang").disabled = true;
+  try { if (await guiPhieu(p.tieuDe, thanPhieu(NHAN_TC, p.gt), $("tcKq"))) ["tcTien", "tcMoTa", "tcHd", "tcNcc", "tcMaNh"].forEach(id => $(id).value = ""); }
+  catch (e) { $("tcKq").hidden = false; $("tcKq").className = "ketqua bad"; $("tcKq").textContent = e.message; }
+  ve();
+});
+$("kGuiThang").addEventListener("click", async () => {
+  const loai = $("kLoai").value, so = +$("kSo").value || 0;
+  const gt = { loai: PHIEU[loai][0], thanh_vien: $("tTv").value, so_luong: loai === "GIO_CONG" ? String(so).replace(".", ",") : fmt(so), ngay: vnDate($("kNgay").value), mo_ta: $("kMoTa").value.trim(), ma_doi_chieu: $("kMa").value.trim() };
+  if (!so || !gt.mo_ta) { $("kKq").hidden = false; $("kKq").className = "ketqua bad"; $("kKq").textContent = "Cần nhập số tiền hoặc số giờ, và mô tả."; return; }
+  $("kGuiThang").disabled = true;
+  try { await guiPhieu(`[Khai báo] ${PHIEU[loai][0].split(" (")[0]} – ${gt.thanh_vien}`, thanPhieu(NHAN_KB, gt), $("kKq")); }
+  catch (e) { $("kKq").hidden = false; $("kKq").className = "ketqua bad"; $("kKq").textContent = e.message; }
+  $("kGuiThang").disabled = false;
+});
 </script>
