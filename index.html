@@ -136,6 +136,8 @@ a.btn:hover{border-color:var(--bronze)}
 a.btn.primary{background:var(--bronze);border-color:var(--bronze);color:var(--bg);font-weight:600}
 .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .who-k{font-size:.78rem;color:var(--muted);white-space:nowrap}
+.nap ol.buoc{margin:0;padding-left:20px;display:grid;gap:6px}
+.nap a{color:var(--bronze-ink)}
 /* sổ */
 .filters{display:flex;gap:8px;flex-wrap:wrap}
 .filters select{width:auto}
@@ -175,7 +177,7 @@ footer{font-size:.8rem;color:var(--muted)}
       </div>
     </div>
     <div class="tools">
-      <span class="src sample" id="src">Dữ liệu mẫu · Phụ lục A</span>
+      <span class="src" id="src">Chưa nạp sổ</span>
       <label class="btn" title="Chọn file so-cai.jsonl, hoặc trên GitHub bấm Copy raw file rồi dán (Ctrl+V / ⌘V) vào trang này. Sổ chỉ được đọc trong trình duyệt, không gửi đi đâu.">Mở file sổ cái<input type="file" id="fileSo" accept=".jsonl,.json,.txt"></label>
       <button id="btnTamper" type="button">Thử làm giả 1 con số</button>
       <label class="asof" for="asof">Xem tại ngày <input type="date" id="asof"></label>
@@ -183,6 +185,19 @@ footer{font-size:.8rem;color:var(--muted)}
   </header>
 
   <div class="status" id="status" aria-live="polite"></div>
+
+  <section class="card nap" id="napSo" hidden>
+    <h2>Nạp sổ cái thật</h2>
+    <p class="muted" style="margin:0">Sổ thật nằm trong kho riêng tư, chỉ thành viên được mời mới mở được. Trang này đọc sổ ngay trong trình duyệt của bạn, không gửi đi đâu, và nhớ cho lần mở sau trên máy này.</p>
+    <ol class="buoc">
+      <li>Mở <a href="https://github.com/triettran261192-code/soho-tt/blob/main/so-cai/so-cai.jsonl" target="_blank" rel="noopener">so-cai.jsonl trong kho soho-tt ↗</a> (đăng nhập GitHub nếu được hỏi).</li>
+      <li>Bấm nút <b>Copy raw file</b> (biểu tượng hai tờ giấy, góc phải phía trên nội dung file).</li>
+      <li>Quay lại trang này, bấm vào chỗ bất kỳ rồi nhấn <b>Ctrl+V</b> (Mac: <b>⌘V</b>). Hoặc tải file về rồi bấm <b>Mở file sổ cái</b>.</li>
+    </ol>
+    <div><button type="button" id="btnMau">Xem sổ mẫu (Phụ lục A Điều lệ)</button></div>
+  </section>
+
+  <div id="noiDung">
 
   <section aria-labelledby="h-chain">
     <div class="sec-head">
@@ -268,6 +283,8 @@ footer{font-size:.8rem;color:var(--muted)}
       <div><h3>Neo vào Bitcoin</h3><p class="muted" style="margin:0">Sau mỗi lần ghi, mã đầu chuỗi được neo lên blockchain Bitcoin. Chỉ mã băm lên chuỗi, tên và số tiền vẫn riêng tư.</p></div>
     </div>
   </section>
+
+  </div>
 
   <footer>Muốn xem bản mới nhất: trên GitHub mở <span class="mono">so-cai/so-cai.jsonl</span>, bấm Copy raw file, rồi dán (Ctrl+V / ⌘V) vào trang này. Trang nhớ bản đã dán trên máy bạn cho lần mở sau. Trang này tự tính lại mọi con số và tự kiểm mã băm ngay trong trình duyệt, theo đúng quy tắc của <span class="mono">cong-cu/soquy.py</span>. Nếu số ở đây khác với số tính lại từ sổ, số tính từ sổ được dùng (Điều 23.6).</footer>
 </div>
@@ -478,8 +495,11 @@ function parse(text) {
 function nap(text, nguon, laMau) {
   try { S.goc = parse(text); } catch (err) { $("status").className = "status bad"; $("status").innerHTML = `<div class="seal">!</div><div><h2>Không đọc được file</h2><p class="muted">${esc(err.message)}. Hãy chọn đúng file so-cai/so-cai.jsonl.</p></div>`; return; }
   S.nguon = nguon; S.mau = laMau; S.tamper = false; S.sel = null; S.dlSha = null;
+  $("napSo").hidden = true; $("noiDung").hidden = false; $("btnTamper").hidden = false;
   if (!laMau && !nguon.startsWith("Sổ đã lưu")) { try { localStorage.setItem("soquy-so", text); localStorage.setItem("soquy-luc", new Date().toISOString()); } catch (_) {} }
   $("src").textContent = nguon; $("src").className = "src" + (laMau ? " sample" : "");
+  $("src").title = laMau ? "Bấm để thoát sổ mẫu" : ""; $("src").style.cursor = laMau ? "pointer" : "";
+  $("src").onclick = laMau ? () => { try { const t = localStorage.getItem("soquy-so"); if (t) return nap(t, "Sổ đã lưu trên máy này", false); } catch (_) {} chuaNap(); } : null;
   $("btnTamper").textContent = "Thử làm giả 1 con số";
   const last = S.goc.reduce((m, e) => (day(e.ghi_luc || "") > m ? day(e.ghi_luc) : m), "");
   $("asof").value = last > todayISO() ? last : todayISO();
@@ -700,6 +720,12 @@ $("fileDl").addEventListener("change", ev => { const f = ev.target.files[0]; if 
     const luu = localStorage.getItem("soquy-so"), luc = localStorage.getItem("soquy-luc");
     if (luu) { nap(luu, "Sổ đã lưu trên máy này · nạp lúc " + new Date(luc).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" }), false); return; }
   } catch (_) {}
-  nap(mau, "Dữ liệu mẫu · Phụ lục A", true);
+  chuaNap();
 })();
+function chuaNap() {
+  $("noiDung").hidden = true; $("napSo").hidden = false; $("btnTamper").hidden = true;
+  $("src").textContent = "Chưa nạp sổ"; $("src").className = "src";
+  $("status").className = "status"; $("status").innerHTML = '<div class="seal" style="background:var(--mute-bg);color:var(--muted)">?</div><div><h2>Chưa có sổ trên máy này</h2><div class="facts">Làm 3 bước bên dưới để xem sổ cái thật của SOHO T&amp;T.</div></div>';
+}
+$("btnMau").addEventListener("click", () => nap($("mau").textContent, "Sổ MẪU · Phụ lục A · không phải dữ liệu thật", true));
 </script>
