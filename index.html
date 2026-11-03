@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>Sổ cái SOHO T&amp;T</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -480,7 +481,7 @@ const VIET_TAT = { KHOI_TAO: "Khởi", QUY_TAC: "Q.tắc", DIEU_LE: "Đ.lệ", T
   QUYET_DINH: "Q.định", ROI_DI: "Rời", CHOT_KY: "Chốt" };
 const PILL = { da_xac_nhan: ["p-ok", "Đã xác nhận"], cho_xac_nhan: ["p-wait", "Chờ 7 ngày"], bi_phan_doi: ["p-bad", "Đang bị phản đối"], da_huy: ["p-mute", "Đã huỷ"] };
 
-const S = { goc: [], so: [], nguon: "", mau: true, tamper: false, dlSha: null, sel: null };
+const S = { goc: [], so: [], nguon: "", mau: true, tamper: false, dlSha: null, sel: null, niemPhong: null, lechCu: "" };
 
 /* trống đồng: ngôi sao 12 cánh */
 (() => { const g = $("star"); let p = ""; for (let i = 0; i < 12; i++) { const a = i * Math.PI / 6, b = a + Math.PI / 12, c = a - Math.PI / 12;
@@ -496,7 +497,15 @@ function nap(text, nguon, laMau) {
   try { S.goc = parse(text); } catch (err) { $("status").className = "status bad"; $("status").innerHTML = `<div class="seal">!</div><div><h2>Không đọc được file</h2><p class="muted">${esc(err.message)}. Hãy chọn đúng file so-cai/so-cai.jsonl.</p></div>`; return; }
   S.nguon = nguon; S.mau = laMau; S.tamper = false; S.sel = null; S.dlSha = null;
   $("napSo").hidden = true; $("noiDung").hidden = false; $("btnTamper").hidden = false;
-  if (!laMau && !nguon.startsWith("Sổ đã lưu")) { try { localStorage.setItem("soquy-so", text); localStorage.setItem("soquy-luc", new Date().toISOString()); } catch (_) {} }
+  S.lechCu = "";
+  if (!laMau && !nguon.startsWith("Sổ đã lưu")) {
+    let cu = null; try { cu = localStorage.getItem("soquy-so"); } catch (_) {}
+    if (cu) { try { const c = parse(cu), n = S.goc;
+      if (n.length < c.length || !n[c.length - 1] || n[c.length - 1].hash !== c[c.length - 1].hash)
+        S.lechCu = `Sổ vừa nạp KHÁC sổ bạn đã xem trước đây trên máy này (từ dòng ${Math.min(c.length, n.length) || 1}). Sổ thật chỉ được ghi thêm, nên đây có thể là sổ giả hoặc lịch sử bị viết lại. Trang vẫn giữ bản cũ của bạn.`;
+    } catch (_) {} }
+    if (!S.lechCu) { try { localStorage.setItem("soquy-so", text); localStorage.setItem("soquy-luc", new Date().toISOString()); } catch (_) {} }
+  }
   $("src").textContent = nguon; $("src").className = "src" + (laMau ? " sample" : "");
   $("src").title = laMau ? "Bấm để thoát sổ mẫu" : ""; $("src").style.cursor = laMau ? "pointer" : "";
   $("src").onclick = laMau ? () => { try { const t = localStorage.getItem("soquy-so"); if (t) return nap(t, "Sổ đã lưu trên máy này", false); } catch (_) {} chuaNap(); } : null;
@@ -517,6 +526,14 @@ function apDung() {
 function ve() {
   const so = S.so, asof = $("asof").value || undefined;
   const kt = kiemTra(so, S.dlSha);
+  let npTxt = "";
+  if (!S.mau && S.niemPhong) {
+    const np = S.niemPhong, r = so[np.stt - 1];
+    if (!r) { kt.loi.unshift(`Sổ này chỉ có ${so.length} dòng, ngắn hơn bản chính thức (${np.stt} dòng). Có thể là sổ cũ hoặc sổ giả: tải lại file từ kho soho-tt.`); }
+    else if (r.hash !== np.hash) { kt.loi.unshift(`KHÔNG KHỚP dấu niêm phong chính thức ở dòng ${np.stt}. Đây không phải sổ thật của SOHO T&T.`); kt.hong.add(np.stt); }
+    else npTxt = `<span style="color:var(--ok)"><b>✓ Khớp niêm phong chính thức</b> đến dòng ${np.stt}${so.length > np.stt ? ` (+${so.length - np.stt} dòng mới hơn)` : ""}</span>`;
+  }
+  if (S.lechCu) kt.loi.unshift(S.lechCu);
   const st = tinh(so, asof);
   const ms = Object.keys(st.diem);
   const tong = ms.reduce((a, m) => a + st.diem[m].tong, 0), tongTien = ms.reduce((a, m) => a + st.diem[m].tien_mat, 0);
@@ -533,6 +550,7 @@ function ve() {
       <span>Mã đầu chuỗi <span class="mono">${head.slice(0, 10)}…${head.slice(-6)}</span></span>
       ${dlE ? `<span>Điều lệ <b>${esc(dlE.phien_ban)}</b> <span class="mono">${dlE.sha256.slice(0, 10)}…</span>${S.dlSha ? (S.dlSha === dlE.sha256 ? ' <b style="color:var(--ok)">· file khớp</b>' : "") : ""}</span>` : ""}
       <span>Tính đến <b>${new Date(st.denNgay + "T00:00:00").toLocaleDateString("vi-VN")}</b></span>
+      ${npTxt}
       ${S.tamper ? '<b style="color:var(--bad)">Đang ở chế độ thử làm giả: một khoản góp tiền bị tăng thêm 5 triệu</b>' : ""}
     </div></div>
     ${kt.loi.length ? `<ul class="errs">${kt.loi.slice(0, 6).map(x => `<li>${esc(x)}</li>`).join("")}${kt.loi.length > 6 ? `<li>…và ${kt.loi.length - 6} lỗi khác</li>` : ""}</ul>` : ""}
@@ -708,6 +726,7 @@ $("fileDl").addEventListener("change", ev => { const f = ev.target.files[0]; if 
 /* khởi động: trong kho thì đọc sổ thật, nếu không thì dùng sổ mẫu */
 (async () => {
   const mau = $("mau").textContent;
+  try { const r = await fetch("niem-phong.json", { cache: "no-store" }); if (r.ok) S.niemPhong = await r.json(); } catch (_) {}
   try {
     if (location.protocol.startsWith("http") && !location.hostname.endsWith("claude.ai") && !location.hostname.endsWith("claudeusercontent.com")) {
       const r = await fetch("../so-cai/so-cai.jsonl", { cache: "no-store" });
